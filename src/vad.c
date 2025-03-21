@@ -83,8 +83,8 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
  */
 
 
-//Això és l'autòmata
-VAD_STATE vad(VAD_DATA *vad_data, float *x) {
+//Això és l'autòmata, hem afegit alpha0 pq rebi el valor dels umbrals per terminal i així no cal compilar i executar tot el rato
+VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0) {
 
   /* 
    * TODO: You can change this, using your own features,
@@ -97,17 +97,23 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
   switch (vad_data->state) {
   case ST_INIT:
     vad_data->state = ST_SILENCE;
+    vad_data->p0 = f.p;
     break;
 
   case ST_SILENCE:
-    //Si la potència és > 0.5 passem a voice
-    if (f.p > 0.95)
+    //Si la potència és > 0.95 passem a voice
+    //Hem de ficar els umbrals corresponents al nostre àudio per tal de que s'ajusti a la nostra senyal (els valors han de ser corresponents al Resultat2.txt)
+
+    //Com podem determinar el nivell de continua en temps real (pq s'ha de fer en temps real): Una aprox és suposar que la 1ra trama sempre serà silenci i 
+    //agafar alló com a umbral i després anar-lo actualitzant
+
+    if (f.p > vad_data->p0 + alpha0)
       vad_data->state = ST_VOICE;
     break;
 
   case ST_VOICE:
     //Si la potència és < 0.01 passem a silenci
-    if (f.p < 0.01)
+    if (f.p < vad_data->p0 + alpha0)
       vad_data->state = ST_SILENCE;
     break;
 

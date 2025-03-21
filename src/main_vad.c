@@ -34,6 +34,7 @@ int main(int argc, char *argv[]) {
   input_wav  = args.input_wav;
   output_vad = args.output_vad;
   output_wav = args.output_wav;
+  float alpha0 = 5; //Una declaració com qualsevol altra, però ho hem de fer amb args per poder llegir-ho de la linia de comandos
 
   if (input_wav == 0 || output_vad == 0) {
     fprintf(stderr, "%s\n", args.usage_pattern);
@@ -86,8 +87,8 @@ int main(int argc, char *argv[]) {
       /* TODO: copy all the samples into sndfile_out */
     }
 
-    //Aquí determina en quins possibles estats podem estar
-    state = vad(vad_data, buffer);
+    //Aquí determina en quins possibles estats podem estar. Hem afegit el alpha0 per poder-ho llegir per pantalla
+    state = vad(vad_data, buffer, alpha0);
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 
     /* TODO: print only SILENCE and VOICE labels */
