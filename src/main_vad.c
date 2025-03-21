@@ -26,6 +26,8 @@ int main(int argc, char *argv[]) {
 
   char	*input_wav, *output_vad, *output_wav;
 
+
+  //Comencem a e estudiar els fitxers que se li passen al programa
   DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
 
   verbose    = args.verbose ? DEBUG_VAD : 0;
@@ -68,6 +70,8 @@ int main(int argc, char *argv[]) {
   frame_size   = vad_frame_size(vad_data);
   buffer       = (float *) malloc(frame_size * sizeof(float));
   buffer_zeros = (float *) malloc(frame_size * sizeof(float));
+  
+  //Mentres pugui llegir fitxers d'entrada
   for (i=0; i< frame_size; ++i) buffer_zeros[i] = 0.0F;
 
   frame_duration = (float) frame_size/ (float) sf_info.samplerate;
@@ -77,10 +81,12 @@ int main(int argc, char *argv[]) {
     /* End loop when file has finished (or there is an error) */
     if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) break;
 
+
     if (sndfile_out != 0) {
       /* TODO: copy all the samples into sndfile_out */
     }
 
+    //Aquí determina en quins possibles estats podem estar
     state = vad(vad_data, buffer);
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 

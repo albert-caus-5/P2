@@ -11,6 +11,8 @@ const char *state2str(VAD_STATE st);
 /* TODO: add the variables needed to control the VAD 
    (counts, thresholds, etc.) */
 
+
+//EStructura que tindrà vaddata (el autòmata)
 typedef struct {
   VAD_STATE state;
   float sampling_rate;

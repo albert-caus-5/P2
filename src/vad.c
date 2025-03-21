@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "pav_analysis.h"
 #include "vad.h"
+
+
+
+//Aquí es defineixen 
 
 const float FRAME_TIME = 10.0F; /* in ms. */
 
@@ -42,7 +47,7 @@ Features compute_features(const float *x, int N) {
    * For the moment, compute random value between 0 and 1 
    */
   Features feat;
-  feat.zcr = feat.p = feat.am = (float) rand()/RAND_MAX;
+    feat.p = compute_power(x,N); //Funció de la p1 que calcula la potencia
   return feat;
 }
 
@@ -77,6 +82,8 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
  * using a Finite State Automata
  */
 
+
+//Això és l'autòmata
 VAD_STATE vad(VAD_DATA *vad_data, float *x) {
 
   /* 
@@ -93,11 +100,13 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
     break;
 
   case ST_SILENCE:
+    //Si la potència és > 0.5 passem a voice
     if (f.p > 0.95)
       vad_data->state = ST_VOICE;
     break;
 
   case ST_VOICE:
+    //Si la potència és < 0.01 passem a silenci
     if (f.p < 0.01)
       vad_data->state = ST_SILENCE;
     break;

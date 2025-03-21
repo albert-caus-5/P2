@@ -12,7 +12,7 @@ DIR_P2=$HOME/PAV/P2
 DB=$DIR_P2/db.v4
 CMD=$DIR_P2/bin/vad
 
-for filewav in $DB/*/*wav; do
+for filewav in $DB/*/*wav; do  #Per tots els fitxers de la base de dades
 #    echo
     echo "**************** $filewav ****************"
     if [[ ! -f $filewav ]]; then 
@@ -20,7 +20,7 @@ for filewav in $DB/*/*wav; do
 	    exit 1
     fi
 
-    filevad=${filewav/.wav/.vad}
+    filevad=${filewav/.wav/.vad}  #Sustitució al bash de .wav a .vad
 
     $CMD -i $filewav -o $filevad || exit 1
 
