@@ -4,7 +4,7 @@
 
 
 float compute_power(const float *x, unsigned int N) {
-    float sum = 0, res;
+    float sum = 1e-12, res;
     for(int i = 0; i<N; i++){
         sum += (x[i])*(x[i]);
     }
@@ -14,7 +14,7 @@ float compute_power(const float *x, unsigned int N) {
 
 float compute_am(const float *x, unsigned int N) {
     
-    float sum = 0;
+    float sum = 1e-12;
     for(int i = 0; i<N; i++){
         sum += x[i];
     }
