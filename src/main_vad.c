@@ -29,12 +29,16 @@ int main(int argc, char *argv[]) {
 
   //Comencem a e estudiar els fitxers que se li passen al programa
   DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
+  float alpha0 = 5.0; // valor per defecte
+  if (argc > 1) {
+    alpha0 = atof(argv[argc - 1]); // llegeix l'últim argument
+  }
+
 
   verbose    = args.verbose ? DEBUG_VAD : 0;
   input_wav  = args.input_wav;
   output_vad = args.output_vad;
   output_wav = args.output_wav;
-  alpha0 = ${1:-5}; //Una declaració com qualsevol altra, però ho hem de fer amb args per poder llegir-ho de la linia de comandos
 
   if (input_wav == 0 || output_vad == 0) {
     fprintf(stderr, "%s\n", args.usage_pattern);

@@ -1,0 +1,63 @@
+#Es pot ficar CMD="$DIR_P2/bin/vad -o5.5" per ficar el valor de defecte del umbral
+"""
+Com a millora es pot ficar:
+alpha0 = $1  #Això és que llegeixi l'argument que se li passa per la linia de comandos, però ha d'estar inicialitzat d'alguna forma pq sinò quan 
+            #l'Albino ho executi sense ficar cap valor no peti. Això es fa ficant alpha0 = ${1:-5}, això li dona el valor 5 per defecte
+CMD="$DIR_P2/bin/vad -o$alpha0"
+
+Amb això aconseguim passar-li el valor per la comanda de shell i no cal recompilar cada vegada
+I per executar-ho a la shell: scripts/run_vad.sh 
+
+
+Després lo que podem fer és guardar els diferents resultats que treu el terminal pq poguem comparar els diferents resultats si fem canvis en el threshold:
+Podem executar a la shell: scripts/run_vad.sh | grep "2018-19q[12].*.lab:" #això el que fa és pillar el 2018-19 i els dos quadrimestres, després el * el que fa és 
+#menjar-se tot lo que hi hagi al mig independentment de lo que hi hagi i després que acabi amb .lab:
+#Finalment per només veure el resultat final es pot fer scripts/run_vad.sh | grep "TOTAL"
+#Per poder provar els diferents valors i quedar-nos amb el millor ho podem fer amb un bucle, en el llenguatge de bash es monta com:
+for alpha0 in 4.8 4.9 5.0 5.1 5.2; do
+    scripts/run_vad.sh $alpha0 | grep "TOTAL"
+done;
+#Això se li ha de passar a la linia de comando, Tmb se li pot ficar amb una sola linia: for alpha0 in 4.8 4.9....; do scripts/run_vad.sh $alpha0 | grep "TOTAL"; done
+
+#Per millorar lo que es veu per panatalla pq així sortirà més bonic i més clar: 
+for alpha0 in 4.8 4.9....; do echo -n "$alpha0: "; scripts/run_vad.sh $alpha0 | grep "TOTAL"; done
+
+
+#Per millorar el bucle i no haver de ficar els diferents valors li podem dir que sigui amb un increment amb el seq (man seq per veure-ho):
+seq 4 0.1 6 #Això el que fa és ficar 4.0 4.1 4.2 4.3 .... 5.9 6
+
+OBS: Per a que funcioni bé i no surti 4,1 4,2 i surti 4.1 4.2 s'ha de ficar
+for alpha0 in $(seq 4 0.1 6); do
+    aux_alpha0=${alpha0/,/.}
+    echo -n "alpha0: $aux_alpha0"
+    scripts/runvad.sh $echo_alpha0 | grep TOTAL
+done
+Sinó lo millor és ficar export LC_ALL=C al principi del script que li he ficat jo el nom i no cal ficar el aux_alpha....
+
+
+
+#Ara el que volem és que això estigui a la línia de comenados anterior del for
+for alpha0 in $(seq 4 0.1 6); do echo -n "$alpha0: "; scripts/run_vad.sh $alpha0 | grep "TOTAL"; done
+
+#Finalment tmb es pot ficar aquesta comanda amb un script pq així serà més fàcil
+
+#S'ha de crear un script amb un nom (que sigui original, pot ser un gasalmatalas)
+#Ha de tenir:
+#! /bin/bash
+
+for alpha0 in $(seq 4 0.1 6); do 
+    echo -ne "$alpha0:\t";  #la \t és per introduir un tabulador i pq ho entengui hem de ficar el -e al echo
+    scripts/run_vad.sh $alpha0 | grep "TOTAL"; 
+done
+
+Per donar-li permisos d'execució al fitxer:
+chmod +x scripts/_______nom del arxiu que li he ficat______   
+
+#Per donar-li l'ordre de que ordeni els resultats de menys bo a més bo ho podem fer amb el sort (man sort per veure-ho)
+#Per fer-ho s'ha d'executar a la shell
+
+sripts/______nom del arxiu que li he ficat_______ | sort -t ":" -k 3n  #Això el que fa és agafar el tercer ":"
+
+#Per millorar la detecció es pot utilitzar 
+
+"""
