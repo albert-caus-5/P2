@@ -42,7 +42,7 @@ Para cargar los ficheros en su ordenador personal debe seguir los pasos siguient
 	-	Abra una sesión de Bash en su ordenador personal y vaya al directorio **PAV**. Desde ahí, ejecute:
 
 		```.sh
-		git clone dirección-del-fork-de-la-práctica
+		git clone dirección-del-fork-de-la-práctica	
 		```
 
 	-	Vaya al directorio de la práctica `cd P2`.
