@@ -142,7 +142,10 @@ Ejercicios
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 ![Forma de onda](onda_audio.png)
-![segmentos](capt.png)
+<p align="center">
+  <img src="capt.png" width="200" />
+</p>
+
 
 
 
@@ -152,6 +155,7 @@ Ejercicios
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
+			
 			Para determinar si una parte de la señal es un silencio, requerimos que tenga una duración mínima de 150 milisegundos (Silence Time). En contraste, para que un segmento sea considerado como voz, debe tener al menos una duración de 300 milisegundos (Voice Time).
 
 
