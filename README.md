@@ -142,6 +142,7 @@ Ejercicios
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 ![Forma de onda](onda_audio.png)
+![segmentos](capt.png)
 
 
 
