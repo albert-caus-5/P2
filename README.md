@@ -162,6 +162,8 @@ Ejercicios
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 
+			La tasa de cruces por cero puede ayudarnos a identificar si un fragmento de audio corresponde a voz o a silencio, aunque esta métrica no aporta tanta información como la potencia. Aun así, resulta útil para diferenciar entre sonidos sonoros y sordos: los sonidos sordos tienden a tener más cruces por cero, mientras que los sonoros presentan menos.
+
 
 ### Desarrollo del detector de actividad vocal
 
