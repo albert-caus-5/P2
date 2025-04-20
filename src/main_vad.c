@@ -27,12 +27,15 @@ int main(int argc, char *argv[]) {
   char	*input_wav, *output_vad, *output_wav;
 
 
-  //Comencem a e estudiar els fitxers que se li passen al programa
+  //Comencem a estudiar els fitxers que se li passen al programa
   DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
-  float alpha0 = 5.0; // valor per defecte
-  if (argc > 1) {
-    alpha0 = atof(argv[argc - 1]); // llegeix l'últim argument
+  float alpha0 = 5.0, alpha1 = 1.0;
+  if (argc > 3) {
+      alpha0 = atof(argv[argc - 2]);
+      alpha1 = atof(argv[argc - 1]);
   }
+  
+  
 
 
   verbose    = args.verbose ? DEBUG_VAD : 0;
@@ -92,17 +95,26 @@ int main(int argc, char *argv[]) {
     }
 
     //Aquí determina en quins possibles estats podem estar. Hem afegit el alpha0 per poder-ho llegir per pantalla
-    state = vad(vad_data, buffer, alpha0);
+    state = vad(vad_data, buffer, alpha0, alpha1);
+
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 
     /* TODO: print only SILENCE and VOICE labels */
     /* As it is, it prints UNDEF segments but is should be merge to the proper value */
-    if (state != last_state) {
+    // Només escrivim si last_state és definitiu
+    if ((state != last_state) &&
+        (last_state == ST_SILENCE || last_state == ST_VOICE)) {
+
       if (t != last_t)
-        fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration, state2str(last_state));
-      last_state = state;
+        fprintf(vadfile, "%.5f\t%.5f\t%s\n",
+                last_t * frame_duration,
+                t * frame_duration,
+                state2str(last_state));
+
       last_t = t;
+      last_state = state;
     }
+
 
     if (sndfile_out != 0) {
       /* TODO: go back and write zeros in silence segments */
@@ -110,6 +122,14 @@ int main(int argc, char *argv[]) {
   }
 
   state = vad_close(vad_data);
+  if (state == ST_SILENCE || state == ST_VOICE) {
+    if (t != last_t)
+      fprintf(vadfile, "%.5f\t%.5f\t%s\n",
+              last_t * frame_duration,
+              t * frame_duration + n_read / (float) sf_info.samplerate,
+              state2str(state));
+  }
+
   /* TODO: what do you want to print, for last frames? */
   if (t != last_t)
     fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration + n_read / (float) sf_info.samplerate, state2str(state));

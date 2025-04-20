@@ -2,24 +2,51 @@
 #define _VAD_H
 #include <stdio.h>
 
-/* TODO: add the needed states */
-typedef enum {ST_UNDEF=0, ST_SILENCE, ST_VOICE, ST_INIT} VAD_STATE;
+/* DONE: add the needed states */
+typedef enum {
+   ST_UNDEF = 0,
+   ST_SILENCE,
+   ST_VOICE,
+   ST_INIT,
+   ST_MAYBE_VOICE,
+   ST_MAYBE_SILENCE
+ } VAD_STATE;
+ 
 
 /* Return a string label associated to each state */
 const char *state2str(VAD_STATE st);
 
-/* TODO: add the variables needed to control the VAD 
+/* DONE: add the variables needed to control the VAD 
    (counts, thresholds, etc.) */
-
-
-//EStructura que tindrà vaddata (el autòmata)
+//Estructura que tindrà vaddata (el autòmata)
 typedef struct {
-  VAD_STATE state;
-  float sampling_rate;
-  unsigned int frame_length;
-  float last_feature; /* for debuggin purposes */
-  float p0;
-} VAD_DATA;
+   VAD_STATE state;
+   float sampling_rate;
+   unsigned int frame_length;
+   float last_feature;  /* for debuggin purposes */
+ 
+   // Umbrals
+   float p0;            // k0
+   float k1;            // k1 = p0 + alpha0
+   float k2;            // k2 = k1 + alpha1
+ 
+   // INIT
+   int tk0_frames;
+   int t_init;
+   float p0_sum;
+ 
+   // MAYBE_VOICE
+   int t_voice;
+   int t_silence;
+   int tk1_frames;
+   int tk2_frames;
+ 
+   // MAYBE_SILENCE
+   int silence_count;
+   int min_silence_frames;
+ } VAD_DATA;
+ 
+
 
 /* Call this function before using VAD: 
    It should return allocated and initialized values of vad_data
@@ -40,7 +67,8 @@ unsigned int vad_frame_size(VAD_DATA *);
 
     x: input frame
        It is assumed the length is frame_length */
-VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0);
+VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0, float alpha1);
+
 
 /* Free memory
    Returns the state of the last (undecided) states. */

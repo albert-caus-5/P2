@@ -55,13 +55,30 @@ Features compute_features(const float *x, int N) {
  * TODO: Init the values of vad_data
  */
 
-VAD_DATA * vad_open(float rate) {
+ VAD_DATA * vad_open(float rate) {
   VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
   vad_data->state = ST_INIT;
   vad_data->sampling_rate = rate;
   vad_data->frame_length = rate * FRAME_TIME * 1e-3;
+
+  // INIT
+  vad_data->tk0_frames = 4;
+  vad_data->t_init = 0;
+  vad_data->p0_sum = 0.0;
+
+  // MAYBE_VOICE
+  vad_data->tk1_frames = 1;
+  vad_data->tk2_frames = 2;
+  vad_data->t_voice = 0;
+  vad_data->t_silence = 0;
+
+  // MAYBE_SILENCE
+  vad_data->silence_count = 0;
+  vad_data->min_silence_frames = 2;
+
   return vad_data;
 }
+
 
 VAD_STATE vad_close(VAD_DATA *vad_data) {
   /* 
@@ -84,49 +101,90 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
 
 
 //Això és l'autòmata, hem afegit alpha0 pq rebi el valor dels umbrals per terminal i així no cal compilar i executar tot el rato
-VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0) {
-
-  /* 
-   * TODO: You can change this, using your own features,
-   * program finite state automaton, define conditions, etc.
-   */
-
+VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0, float alpha1) {
   Features f = compute_features(x, vad_data->frame_length);
-  vad_data->last_feature = f.p; /* save feature, in case you want to show */
+  vad_data->last_feature = f.p;
 
   switch (vad_data->state) {
+
   case ST_INIT:
-    vad_data->state = ST_SILENCE;
-    vad_data->p0 = f.p;
-    break;
+      vad_data->p0_sum += f.p;
+      vad_data->t_init++;
+      if (vad_data->t_init >= vad_data->tk0_frames) {
+        vad_data->p0 = vad_data->p0_sum / vad_data->tk0_frames;
+        vad_data->k1 = vad_data->p0 + alpha0;
+        vad_data->k2 = vad_data->k1 + alpha1;
+
+        printf("p0 = %.5f, k1 = %.5f, k2 = %.5f\n", vad_data->p0, vad_data->k1, vad_data->k2);
+
+        vad_data->t_voice = 0;
+        vad_data->state = ST_SILENCE;
+    }
+
+      break;
 
   case ST_SILENCE:
-    //Si la potència és > 0.95 passem a voice
-    //Hem de ficar els umbrals corresponents al nostre àudio per tal de que s'ajusti a la nostra senyal (els valors han de ser corresponents al Resultat2.txt)
+      if (f.p > vad_data->k1) {
+          vad_data->t_voice++;
+          if (vad_data->t_voice >= vad_data->tk1_frames) {
+              vad_data->t_voice = 0;
+              vad_data->t_silence = 0;
+              vad_data->state = ST_MAYBE_VOICE;
+          }
+      } else {
+          vad_data->t_voice = 0;
+      }
+      break;
 
-    //Com podem determinar el nivell de continua en temps real (pq s'ha de fer en temps real): Una aprox és suposar que la 1ra trama sempre serà silenci i 
-    //agafar alló com a umbral i després anar-lo actualitzant
+  case ST_MAYBE_VOICE:
+      if (f.p > vad_data->k2) {
+          vad_data->state = ST_VOICE;
+      } else if (f.p > vad_data->k1) {
+          vad_data->t_voice++;
+          vad_data->t_silence = 0;
 
-    if (f.p > vad_data->p0 + alpha0)
-      vad_data->state = ST_VOICE;
-    break;
+          if (vad_data->t_voice >= vad_data->tk2_frames) {
+              vad_data->state = ST_SILENCE;
+          }
+      } else {
+          vad_data->t_silence++;
+          vad_data->t_voice = 0;
+
+          if (vad_data->t_silence >= vad_data->tk1_frames) {
+              vad_data->state = ST_SILENCE;
+          }
+      }
+      break;
 
   case ST_VOICE:
-    //Si la potència és < 0.01 passem a silenci
-    if (f.p < vad_data->p0 + alpha0)
-      vad_data->state = ST_SILENCE;
-    break;
+      if (f.p < vad_data->k1) {
+          vad_data->silence_count = 1;
+          vad_data->state = ST_MAYBE_SILENCE;
+      }
+      break;
 
-  case ST_UNDEF:
-    break;
+  case ST_MAYBE_SILENCE:
+      if (f.p < vad_data->k1) {
+          vad_data->silence_count++;
+          if (vad_data->silence_count >= vad_data->min_silence_frames) {
+              vad_data->state = ST_SILENCE;
+          }
+      } else {
+          vad_data->state = ST_VOICE;
+      }
+      break;
+
+  default:
+      break;
   }
 
-  if (vad_data->state == ST_SILENCE ||
-      vad_data->state == ST_VOICE)
-    return vad_data->state;
+  // Només retornem estats definits
+  if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE)
+      return vad_data->state;
   else
-    return ST_UNDEF;
+      return ST_UNDEF;
 }
+
 
 void vad_show_state(const VAD_DATA *vad_data, FILE *out) {
   fprintf(out, "%d\t%f\n", vad_data->state, vad_data->last_feature);
