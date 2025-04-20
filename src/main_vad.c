@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
   //Comencem a estudiar els fitxers que se li passen al programa
   DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
-  float alpha0 = 5.0, alpha1 = 1.0;
+  float alpha0 = 5.0, alpha1 = 3.0;
   if (argc > 3) {
       alpha0 = atof(argv[argc - 2]);
       alpha1 = atof(argv[argc - 1]);
@@ -84,56 +84,43 @@ int main(int argc, char *argv[]) {
 
   frame_duration = (float) frame_size/ (float) sf_info.samplerate;
   last_state = ST_UNDEF;
-
-  for (t = last_t = 0; ; t++) { /* For each frame ... */
-    /* End loop when file has finished (or there is an error) */
-    if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) break;
-
+  for (t = last_t = 0; ; t++) {
+    if ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size)
+        break;
 
     if (sndfile_out != 0) {
-      /* TODO: copy all the samples into sndfile_out */
+        /* TODO: copy all the samples into sndfile_out */
     }
 
-    //Aquí determina en quins possibles estats podem estar. Hem afegit el alpha0 per poder-ho llegir per pantalla
     state = vad(vad_data, buffer, alpha0, alpha1);
-
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 
-    /* TODO: print only SILENCE and VOICE labels */
-    /* As it is, it prints UNDEF segments but is should be merge to the proper value */
-    // Només escrivim si last_state és definitiu
-    if ((state != last_state) &&
-        (last_state == ST_SILENCE || last_state == ST_VOICE)) {
-
-      if (t != last_t)
-        fprintf(vadfile, "%.5f\t%.5f\t%s\n",
-                last_t * frame_duration,
-                t * frame_duration,
-                state2str(last_state));
-
-      last_t = t;
-      last_state = state;
-    }
-
-
-    if (sndfile_out != 0) {
-      /* TODO: go back and write zeros in silence segments */
+    // Només escriurem quan l’estat confirmat canvia
+    if ((state == ST_VOICE || state == ST_SILENCE)) {
+      if (state != last_state) {
+        if (last_state == ST_VOICE || last_state == ST_SILENCE) {
+          // Tanquem el segment anterior
+          fprintf(vadfile, "%.5f\t%.5f\t%s\n",
+                  last_t * frame_duration,
+                  t * frame_duration,
+                  state2str(last_state));
+        }
+        last_t = t;           // inici del nou segment
+        last_state = state;   // nou estat
+      }
     }
   }
 
   state = vad_close(vad_data);
-  if (state == ST_SILENCE || state == ST_VOICE) {
-    if (t != last_t)
-      fprintf(vadfile, "%.5f\t%.5f\t%s\n",
-              last_t * frame_duration,
-              t * frame_duration + n_read / (float) sf_info.samplerate,
-              state2str(state));
+  if ((last_state == ST_VOICE || last_state == ST_SILENCE) &&
+      t > last_t) {
+    fprintf(vadfile, "%.5f\t%.5f\t%s\n",
+            last_t * frame_duration,
+            t * frame_duration + n_read / (float) sf_info.samplerate,
+            state2str(last_state));
   }
-
+  
   /* TODO: what do you want to print, for last frames? */
-  if (t != last_t)
-    fprintf(vadfile, "%.5f\t%.5f\t%s\n", last_t * frame_duration, t * frame_duration + n_read / (float) sf_info.samplerate, state2str(state));
-
   /* clean up: free memory, close open files */
   free(buffer);
   free(buffer_zeros);

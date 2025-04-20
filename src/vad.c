@@ -22,8 +22,13 @@ const char *state_str[] = {
 };
 
 const char *state2str(VAD_STATE st) {
-  return state_str[st];
+  switch (st) {
+    case ST_SILENCE: return "S";
+    case ST_VOICE: return "V";
+    default: return "UNDEF"; // o millor encara: return NULL;
+  }
 }
+
 
 /* Define a datatype with interesting features */
 typedef struct {
@@ -62,7 +67,7 @@ Features compute_features(const float *x, int N) {
   vad_data->frame_length = rate * FRAME_TIME * 1e-3;
 
   // INIT
-  vad_data->tk0_frames = 4;
+  vad_data->tk0_frames = 6;
   vad_data->t_init = 0;
   vad_data->p0_sum = 0.0;
 
@@ -74,7 +79,7 @@ Features compute_features(const float *x, int N) {
 
   // MAYBE_SILENCE
   vad_data->silence_count = 0;
-  vad_data->min_silence_frames = 2;
+  vad_data->min_silence_frames = 1;
 
   return vad_data;
 }
@@ -95,7 +100,7 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
 }
 
 /* 
- * TODO: Implement the Voice Activity Detection 
+ * Done: Implement the Voice Activity Detection 
  * using a Finite State Automata
  */
 
@@ -108,71 +113,77 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0, float alpha1) {
   switch (vad_data->state) {
 
   case ST_INIT:
-      vad_data->p0_sum += f.p;
-      vad_data->t_init++;
-      if (vad_data->t_init >= vad_data->tk0_frames) {
-        vad_data->p0 = vad_data->p0_sum / vad_data->tk0_frames;
-        vad_data->k1 = vad_data->p0 + alpha0;
-        vad_data->k2 = vad_data->k1 + alpha1;
+    vad_data->p0_sum += f.p;
+    vad_data->t_init++;
+    if (vad_data->t_init >= vad_data->tk0_frames) {
+      vad_data->p0 = vad_data->p0_sum / vad_data->tk0_frames;
+      vad_data->k1 = vad_data->p0 + alpha0;
+      vad_data->k2 = vad_data->k1 + alpha1;
 
-        printf("p0 = %.5f, k1 = %.5f, k2 = %.5f\n", vad_data->p0, vad_data->k1, vad_data->k2);
-
-        vad_data->t_voice = 0;
-        vad_data->state = ST_SILENCE;
+      printf("p0 = %.5f, k1 = %.5f, k2 = %.5f\n", vad_data->p0, vad_data->k1, vad_data->k2);
+      vad_data->t_voice = 0;
+      vad_data->state = ST_SILENCE;
     }
 
-      break;
+    break;
 
   case ST_SILENCE:
-      if (f.p > vad_data->k1) {
-          vad_data->t_voice++;
-          if (vad_data->t_voice >= vad_data->tk1_frames) {
-              vad_data->t_voice = 0;
-              vad_data->t_silence = 0;
-              vad_data->state = ST_MAYBE_VOICE;
-          }
-      } else {
-          vad_data->t_voice = 0;
+    //printf("Estat silenci\n");
+    if (f.p > vad_data->k1) {
+      //printf("Primer if del silence\n");
+      vad_data->t_voice++;
+      if (vad_data->t_voice >= vad_data->tk1_frames) {
+        //printf("Segon if del silenci\n");
+        vad_data->t_voice = 0;
+        vad_data->t_silence = 0;
+        vad_data->state = ST_MAYBE_VOICE;
       }
-      break;
+    } else {
+      //printf("Else del silence\n");
+      vad_data->t_voice = 0;
+    }
+    break;
 
   case ST_MAYBE_VOICE:
-      if (f.p > vad_data->k2) {
-          vad_data->state = ST_VOICE;
-      } else if (f.p > vad_data->k1) {
-          vad_data->t_voice++;
-          vad_data->t_silence = 0;
+    //printf("Estat maybe voice\n");
+    if (f.p > vad_data->k2) {
+      vad_data->state = ST_VOICE;
+    } else if (f.p > vad_data->k1) {
+      vad_data->t_voice++;
+      vad_data->t_silence = 0;
 
-          if (vad_data->t_voice >= vad_data->tk2_frames) {
-              vad_data->state = ST_SILENCE;
-          }
-      } else {
-          vad_data->t_silence++;
-          vad_data->t_voice = 0;
-
-          if (vad_data->t_silence >= vad_data->tk1_frames) {
-              vad_data->state = ST_SILENCE;
-          }
+      if (vad_data->t_voice >= vad_data->tk2_frames) {
+        vad_data->state = ST_SILENCE;
       }
-      break;
+    } else {
+      vad_data->t_silence++;
+      vad_data->t_voice = 0;
+
+      if (vad_data->t_silence >= vad_data->tk1_frames) {
+        vad_data->state = ST_SILENCE;
+      }
+    }
+    break;
 
   case ST_VOICE:
-      if (f.p < vad_data->k1) {
-          vad_data->silence_count = 1;
-          vad_data->state = ST_MAYBE_SILENCE;
-      }
-      break;
+    //printf("Estat Voice\n");
+    if (f.p < vad_data->k1) {
+      vad_data->silence_count = 1;
+      vad_data->state = ST_MAYBE_SILENCE;
+    }
+    break;
 
   case ST_MAYBE_SILENCE:
-      if (f.p < vad_data->k1) {
-          vad_data->silence_count++;
-          if (vad_data->silence_count >= vad_data->min_silence_frames) {
-              vad_data->state = ST_SILENCE;
-          }
-      } else {
-          vad_data->state = ST_VOICE;
+    //printf("Estat maybe silenci\n");
+    if (f.p < vad_data->k1) {
+      vad_data->silence_count++;
+      if (vad_data->silence_count >= vad_data->min_silence_frames) {
+         vad_data->state = ST_SILENCE;
       }
-      break;
+    } else {
+      vad_data->state = ST_VOICE;
+    }
+    break;
 
   default:
       break;
@@ -180,9 +191,9 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0, float alpha1) {
 
   // Només retornem estats definits
   if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE)
-      return vad_data->state;
+    return vad_data->state;
   else
-      return ST_UNDEF;
+    return ST_UNDEF;
 }
 
 

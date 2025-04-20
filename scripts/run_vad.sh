@@ -7,7 +7,7 @@
 # distinto de cero, o cero si todos devuelven cero.
 set -o pipefail
 
-alpha0=${1:-2.0}
+alpha0=${1:-5.0}
 alpha1=${2:-3.0}
 
 # Write here the name and path of your program and database
