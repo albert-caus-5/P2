@@ -142,10 +142,6 @@ Ejercicios
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 ![Forma de onda](Captura.png)
-<p align="center">
-  <img src="Captura2.png" width="200" />
-</p>
-
 
 
 
@@ -154,10 +150,11 @@ Ejercicios
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
+			Teniendo en cuenta que solo se quiere detectar voz seria a partir de 47dB aprox.
 	  		
 	* Duración mínima razonable de los segmentos de voz y silencio.
 			
-			Para determinar si una parte de la señal es un silencio, requerimos que tenga una duración mínima de 100 milisegundos (Silence Time). En contraste, para que un segmento sea considerado como voz, debe tener al menos una duración de 300 milisegundos (Voice Time).
+			Para determinar si una parte de la señal es un silencio, requerimos que tenga una duración mínima de 10 milisegundos (Silence Time). En contraste, para que un segmento sea considerado como voz, debe tener al menos una duración de 30 milisegundos (Voice Time).
 
 
 
@@ -173,6 +170,13 @@ Ejercicios
 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
+![Forma de onda](Captura.png)
+<p align="center">
+  <img src="Captura2.png" width="200" />
+  <span style="display:inline-block; width: 5%;"></span>
+  <img src="Captura3.png" width="200%" />
+</p>
+
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 		Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
