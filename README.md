@@ -171,24 +171,19 @@ Ejercicios
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 	![Forma de onda](Captura.png)
-	<p align="center">
-	<img src="Captura2.png" width="200" />
-
-	<img src="Captura3.png" width="200" />
-	</p>
-
- 	<p align="center">
-	  <figure style="display: inline-block; text-align: center; margin: 10px;">
-	    <img src="Captura2.png" width="200" />
-	    <figcaption>Figura 1: Aquesta és l'etiquetat manua</figcaption>
-	  </figure>
-	<span style="display:inline-block; width: 15%;"></span>
-	  <figure style="display: inline-block; text-align: center; margin: 10px;">
-	    <img src="Captura3.png" width="200" />
-	    <figcaption>Figura 2: Aquesta és l'etiquetat del codi</figcaption>
-	  </figure>
-	</p>
-
+	<table>
+	  <tr>
+	    <td align="center">
+	      <img src="Captura2.png" width="150"><br>
+	      <sub>Figura 1: Aquesta és l'etiquetat manual</sub>
+	    </td>
+	    <td align="center">
+	      <img src="Captura3.png" width="200"><br>
+	      <sub>Figura 2: Aquesta és l'etiqeutat del codi</sub>
+	    </td>
+	  </tr>
+	</table>
+ 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 		Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
 
