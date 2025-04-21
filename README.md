@@ -157,7 +157,7 @@ Ejercicios
 	  		
 	* Duración mínima razonable de los segmentos de voz y silencio.
 			
-			Para determinar si una parte de la señal es un silencio, requerimos que tenga una duración mínima de 150 milisegundos (Silence Time). En contraste, para que un segmento sea considerado como voz, debe tener al menos una duración de 300 milisegundos (Voice Time).
+			Para determinar si una parte de la señal es un silencio, requerimos que tenga una duración mínima de 100 milisegundos (Silence Time). En contraste, para que un segmento sea considerado como voz, debe tener al menos una duración de 300 milisegundos (Voice Time).
 
 
 
