@@ -154,6 +154,8 @@ Ejercicios
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 
+	  		Al incrementar el nivel en unos 10 decibelios desde el punto de silencio, se hace posible distinguir entre una señal de voz y una de silencio.
+
 	* Duración mínima razonable de los segmentos de voz y silencio.
 			
 			Para determinar si una parte de la señal es un silencio, requerimos que tenga una duración mínima de 150 milisegundos (Silence Time). En contraste, para que un segmento sea considerado como voz, debe tener al menos una duración de 300 milisegundos (Voice Time).
