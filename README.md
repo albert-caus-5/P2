@@ -171,6 +171,7 @@ Ejercicios
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 	![Forma de onda](Captura.png)
+	<div align="center">
 	<table>
 	  <tr>
 	    <td align="center">
@@ -183,7 +184,7 @@ Ejercicios
 	    </td>
 	  </tr>
 	</table>
- 
+	</div> 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 		Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
 
