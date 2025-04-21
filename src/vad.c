@@ -29,6 +29,7 @@ const char *state2str(VAD_STATE st) {
   }
 }
 
+//Nova funció
 float compute_k0_db(const float *x, int frame_len, int tk0_frames) {
   float sum_lin = 0.0;
 
@@ -56,7 +57,7 @@ typedef struct {
  */
 
 
-Features compute_features(const float *x, int N,  int tk0_frames) {
+Features compute_features(const float *x, int N,  float rate) {
   /*
    * Input: x[i] : i=0 .... N-1 
    * Ouput: computed features
@@ -67,7 +68,8 @@ Features compute_features(const float *x, int N,  int tk0_frames) {
    * For the moment, compute random value between 0 and 1 
    */
   Features feat;
-    feat.p = compute_k0_db( x, N, tk0_frames); //Funció de la p1 que calcula la potencia
+    feat.p = compute_power(x, N); //Funció de la p1 que calcula la potencia
+    feat.zcr = compute_zcr(x, N, rate);
   return feat;
 }
 
@@ -122,25 +124,30 @@ unsigned int vad_frame_size(VAD_DATA *vad_data) {
 
 //Això és l'autòmata, hem afegit alpha0 pq rebi el valor dels umbrals per terminal i així no cal compilar i executar tot el rato
 VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0, float alpha1) {
-  Features f = compute_features(x, vad_data->frame_length, vad_data->tk0_frames);
+  Features f = compute_features(x, vad_data->frame_length, vad_data->sampling_rate);
   vad_data->last_feature = f.p;
 
   switch (vad_data->state) {
 
   case ST_INIT:
+  // Només acumulem si hi ha senyal (zcr > 0)
+  if (f.zcr != 0.0f) {
     vad_data->k0_sum += f.p;
     vad_data->t_init++;
-    if (vad_data->t_init >= vad_data->tk0_frames) {
+      if (vad_data->t_init >= vad_data->tk0_frames) {
+      // Calculem mitjana i umbrals
       vad_data->k0 = vad_data->k0_sum / vad_data->tk0_frames;
       vad_data->k1 = vad_data->k0 + alpha0;
       vad_data->k2 = vad_data->k1 + alpha1;
-
+  
       printf("k0 = %.5f, k1 = %.5f, k2 = %.5f\n", vad_data->k0, vad_data->k1, vad_data->k2);
       vad_data->t_voice = 0;
       vad_data->state = ST_SILENCE;
     }
-
-    break;
+  } else {
+    // No fem res si zcr = 0: evitem acumular frames buits (no incrementem ni k0_sum ni t_init)
+  }
+  break;
 
   case ST_SILENCE:
     //printf("Estat silenci\n");
