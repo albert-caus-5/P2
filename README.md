@@ -186,7 +186,8 @@ Ejercicios
 	</table>
 	</div> 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
-		Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
+
+  	Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
