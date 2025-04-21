@@ -170,12 +170,12 @@ Ejercicios
 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
-![Forma de onda](Captura.png)
-<p align="center">
-  <img src="Captura2.png" width="200" />
-  <span style="display:inline-block; width: 5%;"></span>
-  <img src="Captura3.png" width="200%" />
-</p>
+	![Forma de onda](Captura.png)
+	<p align="center">
+	<img src="Captura2.png" width="200" />
+	<span style="display:inline-block; width: 5%;"></span>
+	<img src="Captura3.png" width="200" />
+	</p>
 
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
