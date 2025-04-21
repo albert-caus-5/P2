@@ -143,7 +143,7 @@ Ejercicios
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 ![Forma de onda](origin.png)
 <p align="center">
-  <img src="orr.png" width="200" />
+  <img src="Captura.png" width="200" />
 </p>
 
 
@@ -175,6 +175,7 @@ Ejercicios
   automática conseguida para el fichero grabado al efecto. 
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
+		Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo

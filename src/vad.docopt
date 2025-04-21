@@ -12,3 +12,5 @@ Options:
    -v, --verbose  Show debug information
    -h, --help     Show this screen
    --version      Show the version of the project
+   --alpha0=<a0>     Valor d’α0 [default: 12.0]
+   --alpha1=<a1>     Valor d’α1 [default: 3.0]

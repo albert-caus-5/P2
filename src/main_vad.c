@@ -9,7 +9,7 @@
 #define DEBUG_VAD 0x1
 
 int main(int argc, char *argv[]) {
-  int verbose = DEBUG_VAD; /* To show internal state of vad: verbose = DEBUG_VAD; */
+  int verbose = 0; /* To show internal state of vad: verbose = DEBUG_VAD; */
 
   SNDFILE *sndfile_in, *sndfile_out = 0;
   SF_INFO sf_info;
@@ -28,20 +28,23 @@ int main(int argc, char *argv[]) {
 
 
   //Comencem a estudiar els fitxers que se li passen al programa
+  //Comencem a estudiar els fitxers que se li passen al programa
   DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
-  float alpha0 = 5.0, alpha1 = 3.0;
-  if (argc > 3) {
-      alpha0 = atof(argv[argc - 2]);
-      alpha1 = atof(argv[argc - 1]);
-  }
+
   
   
-
-
   verbose    = args.verbose ? DEBUG_VAD : 0;
   input_wav  = args.input_wav;
   output_vad = args.output_vad;
   output_wav = args.output_wav;
+
+
+  float alpha0 = 12.0, alpha1 = 3.0;
+
+  if (argc > 3) {
+      alpha0 = atof(argv[argc - 2]);
+      alpha1 = atof(argv[argc - 1]);
+  }
 
   if (input_wav == 0 || output_vad == 0) {
     fprintf(stderr, "%s\n", args.usage_pattern);
@@ -89,9 +92,14 @@ int main(int argc, char *argv[]) {
         break;
 
     if (sndfile_out != 0) {
-        /* TODO: copy all the samples into sndfile_out */
+        
     }
-
+    if (alpha0 == 0){
+      alpha0 = 12.0;
+    }
+    if (alpha1 == 0){
+      alpha1 = 3.0;
+    }
     state = vad(vad_data, buffer, alpha0, alpha1);
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 
@@ -120,7 +128,6 @@ int main(int argc, char *argv[]) {
             state2str(last_state));
   }
   
-  /* TODO: what do you want to print, for last frames? */
   /* clean up: free memory, close open files */
   free(buffer);
   free(buffer_zeros);
