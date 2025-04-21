@@ -173,10 +173,21 @@ Ejercicios
 	![Forma de onda](Captura.png)
 	<p align="center">
 	<img src="Captura2.png" width="200" />
-	<span style="display:inline-block; width: 5%;"></span>
+
 	<img src="Captura3.png" width="200" />
 	</p>
 
+ 	<p align="center">
+	  <figure style="display: inline-block; text-align: center; margin: 10px;">
+	    <img src="Captura2.png" width="200" />
+	    <figcaption>Figura 1: Aquesta és l'etiquetat manua</figcaption>
+	  </figure>
+	<span style="display:inline-block; width: 15%;"></span>
+	  <figure style="display: inline-block; text-align: center; margin: 10px;">
+	    <img src="Captura3.png" width="200" />
+	    <figcaption>Figura 2: Aquesta és l'etiquetat del codi</figcaption>
+	  </figure>
+	</p>
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 		Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
