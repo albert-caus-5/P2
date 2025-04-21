@@ -180,14 +180,14 @@ Ejercicios
 	    </td>
 	    <td align="center">
 	      <img src="Captura3.png" width="200"><br>
-	      <sub>Figura 2: Aquesta és l'etiqeutat del codi</sub>
+	      <sub>Figura 2: Aquesta és l'etiquetat del codi</sub>
 	    </td>
 	  </tr>
 	</table>
 	</div> 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
-  	Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en el segundo 		hay un segmento de 		que es 
+  	Hay pequeñas diferencias en el inicio y finalización de las distintas tramas hasta la trama 9, pero a partir de ahí se detecta una trama muy pequeña de silencio que en el etiquetado manual no pusimos
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
