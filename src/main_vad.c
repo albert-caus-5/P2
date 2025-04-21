@@ -9,7 +9,7 @@
 #define DEBUG_VAD 0x1
 
 int main(int argc, char *argv[]) {
-  int verbose = 0; /* To show internal state of vad: verbose = DEBUG_VAD; */
+  int verbose = DEBUG_VAD; /* To show internal state of vad: verbose = DEBUG_VAD; */
 
   SNDFILE *sndfile_in, *sndfile_out = 0;
   SF_INFO sf_info;

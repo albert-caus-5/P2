@@ -26,14 +26,14 @@ typedef struct {
    float last_feature;  /* for debuggin purposes */
  
    // Umbrals
-   float p0;            // k0
-   float k1;            // k1 = p0 + alpha0
+   float k0;            // k0
+   float k1;            // k1 = k0 + alpha0
    float k2;            // k2 = k1 + alpha1
  
    // INIT
    int tk0_frames;
    int t_init;
-   float p0_sum;
+   float k0_sum;
  
    // MAYBE_VOICE
    int t_voice;
