@@ -210,7 +210,9 @@ Ejercicios
 
 - Si ha usado `docopt_c` para realizar la gestión de las opciones y argumentos del programa `vad`, inserte
   una captura de pantalla en la que se vea el mensaje de ayuda del programa.
-
+	<p align="center">
+	  <img src="Captura5.png" width="65%" style="margin-right: 10px;" />
+	</p>
 
 ### Contribuciones adicionales y/o comentarios acerca de la práctica
 
