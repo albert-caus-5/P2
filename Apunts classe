@@ -85,7 +85,7 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0) {
   switch (vad_data->state) {
   case ST_INIT:
     vad_data->state = ST_SILENCE;
-    vad_data->p0 = f.p;
+    vad_data->k0 = f.p;
     break;
 
   case ST_SILENCE:
@@ -95,13 +95,13 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x, float alpha0) {
     //Com podem determinar el nivell de continua en temps real (pq s'ha de fer en temps real): Una aprox és suposar que la 1ra trama sempre serà silenci i 
     //agafar alló com a umbral i després anar-lo actualitzant
 
-    if (f.p > vad_data->p0 + alpha0)
+    if (f.p > vad_data->k0 + alpha0)
       vad_data->state = ST_VOICE;
     break;
 
   case ST_VOICE:
     //Si la potència és < 0.01 passem a silenci
-    if (f.p < vad_data->p0 + alpha0)
+    if (f.p < vad_data->k0 + alpha0)
       vad_data->state = ST_SILENCE;
     break;
 

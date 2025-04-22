@@ -8,7 +8,7 @@
 set -o pipefail
 
 alpha0=${1:-5.0}
-alpha1=${2:-3.0}
+alpha1=${2:-5.0}
 
 # Write here the name and path of your program and database
 DIR_P2=$HOME/PAV/P2
