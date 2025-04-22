@@ -176,18 +176,18 @@ Ejercicios
 	  <tr>
 	    <td align="center">
 	      <img src="Captura2.png" width="150"><br>
-	      <sub>Figura 1: Aquesta és l'etiquetat manual</sub>
+	      <sub>Figura 1: Etiquetado automatico</sub>
 	    </td>
 	    <td align="center">
 	      <img src="Captura3.png" width="200"><br>
-	      <sub>Figura 2: Aquesta és l'etiquetat del codi</sub>
+	      <sub>Figura 2: Etiquetado de nuestro codigo</sub>
 	    </td>
 	  </tr>
 	</table>
 	</div> 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
-  	Hay pequeñas diferencias en el inicio y finalización de las distintas tramas hasta la trama 9, pero a partir de ahí se detecta una trama muy pequeña de silencio que en el etiquetado manual no pusimos
+  	Hay pequeñas diferencias en el inicio y finalización de las distintas tramas pero en la trama 4 hay una diferencia grande en el final ya que el detector del codigo considera voz un tramo de silencio
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
@@ -196,8 +196,7 @@ Ejercicios
 	  <img src="Captura4.png" width="45%" style="margin-right: 10px;" />
 	</p>
 
-   	Aquí podemos ver el resultado de ejecutar la base de datos con los parametros alpha0 = 1.0 i alpha1 = 9.0. Hice una prueba con distintos valores i esta combinacion fue la que salió con mejor resultado, aún así si se aplica a un tramo de voz como el que grabamos nosotros se recomienda usar los parametros por defecto (alpha0 = 12.0 i alpha1 = 3.0) o similares
-
+   	Aquí podemos ver el resultado de ejecutar la base de datos con los parametros alpha0 = 5.0 i alpha1 = 5.0 (Valores por defecto). Hice una prueba con distintos valores i esta combinacion fue la que salió con mejor resultado.
 
 ### Trabajos de ampliación
 
