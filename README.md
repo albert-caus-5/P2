@@ -192,6 +192,11 @@ Ejercicios
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+	<p align="center">
+	  <img src="Captura4.png" width="45%" style="margin-right: 10px;" />
+	</p>
+
+   	Aquí podemos ver el resultado de ejecutar la base de datos con los parametros alpha0 = 1.0 i alpha1 = 9.0. Hice una prueba con distintos valores i esta combinacion fue la que salió con mejor resultado, aún así si se aplica a un tramo de voz como el que grabamos nosotros se recomienda usar los parametros por defecto (alpha0 = 12.0 i alpha1 = 3.0) o similares
 
 
 ### Trabajos de ampliación
